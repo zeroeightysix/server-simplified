@@ -3,42 +3,14 @@ package me.zeroeightsix.serversimplified.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import me.zeroeightsix.serversimplified.ServerSimplified;
-import net.minecraft.command.arguments.EntityArgumentType;
-import net.minecraft.server.command.ServerCommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.StringTextComponent;
 
 import java.util.Collection;
-import java.util.Collections;
 
-import static me.zeroeightsix.serversimplified.Util.isHuman;
 
-public class HealCommand {
-
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        LiteralArgumentBuilder<ServerCommandSource> argumentBuilder = ServerCommandManager
-                .literal("heal")
-                .requires(
-                        (commandSource) ->
-                                ServerSimplified.getConfiguration().getPermissions().checkPermissions(commandSource, "heal")
-                                        || commandSource.hasPermissionLevel(2))
-                .then(
-                        ServerCommandManager.argument("target", EntityArgumentType.multiplePlayer())
-                                .executes((context) -> healPlayers(context, EntityArgumentType.method_9312(context, "target")))
-                )
-                .executes(context -> {
-                    if (isHuman(context.getSource())) {
-                        healPlayers(context, Collections.singleton((ServerPlayerEntity) context.getSource().getEntity()));
-                    } else {
-                        context.getSource().sendError(new StringTextComponent("You must specify at least one player."));
-                    }
-                    return 1;
-                });
-
-        dispatcher.register(argumentBuilder);
-    }
+public class HealCommand extends PlayerActionCommand {
 
     private static int healPlayers(CommandContext<ServerCommandSource> context, Collection<ServerPlayerEntity> entities) {
         for (ServerPlayerEntity entity : entities) {
@@ -53,6 +25,16 @@ public class HealCommand {
         }
 
         return listSize;
+    }
+
+    @Override
+    protected int action(CommandContext<ServerCommandSource> context, Collection<ServerPlayerEntity> players) {
+        return healPlayers(context, players);
+    }
+
+    @Override
+    protected String getName() {
+        return "heal";
     }
 
 }
