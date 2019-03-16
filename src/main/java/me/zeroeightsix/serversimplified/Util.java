@@ -1,4 +1,4 @@
-package me.zeroeightsix.basicstaffmod;
+package me.zeroeightsix.serversimplified;
 
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;

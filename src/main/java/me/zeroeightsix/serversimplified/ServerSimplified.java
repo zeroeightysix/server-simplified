@@ -1,12 +1,10 @@
-package me.zeroeightsix.basicstaffmod;
+package me.zeroeightsix.serversimplified;
 
 import net.fabricmc.api.ModInitializer;
-import sun.security.krb5.Config;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 
-public class BasicStaffMod implements ModInitializer {
+public class ServerSimplified implements ModInitializer {
 
     private static Configuration configuration;
 
@@ -20,7 +18,7 @@ public class BasicStaffMod implements ModInitializer {
             configuration.save();
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Basic staff mod: couldn't save configuration!");
+            System.err.println("Server Simplified: couldn't save configuration!");
         }
     }
 

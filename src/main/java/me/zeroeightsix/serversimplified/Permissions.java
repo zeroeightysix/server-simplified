@@ -1,18 +1,15 @@
-package me.zeroeightsix.basicstaffmod;
+package me.zeroeightsix.serversimplified;
 
 import com.google.gson.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.command.ServerCommandSource;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static me.zeroeightsix.basicstaffmod.Util.isHuman;
+import static me.zeroeightsix.serversimplified.Util.isHuman;
 
 public class Permissions {
 

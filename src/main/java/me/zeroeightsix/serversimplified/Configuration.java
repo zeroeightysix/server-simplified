@@ -1,6 +1,7 @@
-package me.zeroeightsix.basicstaffmod;
+package me.zeroeightsix.serversimplified;
 
 import com.google.gson.*;
+import me.zeroeightsix.serversimplified.commands.MuteCommand;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,7 +10,7 @@ import java.nio.file.Paths;
 
 public class Configuration {
 
-    public static final String PREFFERED_FILENAME = "basicstaff_configuration.json";
+    public static final String PREFFERED_FILENAME = "serversimplified_configuration.json";
 
     private final Path origin;
     Permissions permissions;
@@ -33,8 +34,11 @@ public class Configuration {
             String jsonString = new String(Files.readAllBytes(path));
             JsonObject object = new JsonParser().parse(jsonString).getAsJsonObject();
             JsonArray array = object.getAsJsonArray("permissions");
+            JsonObject muted = object.getAsJsonObject("muted");
+            MuteCommand.fromJson(muted);
             return new Configuration(path, array);
-        } catch (IOException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             return new Configuration(path);
         }
     }
@@ -48,7 +52,10 @@ public class Configuration {
 
     public void save() throws IOException {
         JsonObject object = new JsonObject();
+
         object.add("permissions", getPermissions().toJson());
+        object.add("muted", MuteCommand.toJson());
+
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Files.write(origin, gson.toJson(object).getBytes());
     }

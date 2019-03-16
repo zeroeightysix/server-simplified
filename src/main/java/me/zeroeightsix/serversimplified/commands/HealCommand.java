@@ -1,9 +1,9 @@
-package me.zeroeightsix.basicstaffmod.commands;
+package me.zeroeightsix.serversimplified.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import me.zeroeightsix.basicstaffmod.BasicStaffMod;
+import me.zeroeightsix.serversimplified.ServerSimplified;
 import net.minecraft.command.arguments.EntityArgumentType;
 import net.minecraft.server.command.ServerCommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -13,7 +13,7 @@ import net.minecraft.text.StringTextComponent;
 import java.util.Collection;
 import java.util.Collections;
 
-import static me.zeroeightsix.basicstaffmod.Util.isHuman;
+import static me.zeroeightsix.serversimplified.Util.isHuman;
 
 public class HealCommand {
 
@@ -22,7 +22,7 @@ public class HealCommand {
                 .literal("heal")
                 .requires(
                         (commandSource) ->
-                                BasicStaffMod.getConfiguration().getPermissions().checkPermissions(commandSource, "heal")
+                                ServerSimplified.getConfiguration().getPermissions().checkPermissions(commandSource, "heal")
                                         || commandSource.hasPermissionLevel(2))
                 .then(
                         ServerCommandManager.argument("target", EntityArgumentType.multiplePlayer())

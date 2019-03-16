@@ -1,9 +1,9 @@
-package me.zeroeightsix.basicstaffmod.mixin;
+package me.zeroeightsix.serversimplified.mixin;
 
 import com.mojang.brigadier.CommandDispatcher;
-import me.zeroeightsix.basicstaffmod.BasicStaffMod;
-import me.zeroeightsix.basicstaffmod.commands.HealCommand;
-import me.zeroeightsix.basicstaffmod.commands.MuteCommand;
+import me.zeroeightsix.serversimplified.ServerSimplified;
+import me.zeroeightsix.serversimplified.commands.HealCommand;
+import me.zeroeightsix.serversimplified.commands.MuteCommand;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandManager;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +28,7 @@ public class MixinMinecraftServer {
 
 	@Inject(at = @At("HEAD"), method = "shutdown()V")
 	private void shutdown(CallbackInfo info) {
-		BasicStaffMod.save();
+		ServerSimplified.save();
 	}
 
 }

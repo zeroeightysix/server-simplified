@@ -1,16 +1,16 @@
 {
-  "id": "basic-staff-mod",
-  "name": "Basic Staff Commands",
+  "id": "serversimplified",
+  "name": "Server Simplified",
   "description": "Adds simple commands for server owners.",
   "version": "${version}",
-  "side": "server",
+  "side": "universal",
   "initializers": [
-    "me.zeroeightsix.basicstaffmod.BasicStaffMod"
+    "me.zeroeightsix.serversimplified.ServerSimplified"
   ],
   "requires": {
     "fabric": "*"
   },
   "mixins": {
-    "common": "basic-staff-mod.common.json"
+    "common": "serversimplified.common.json"
   }
 }
