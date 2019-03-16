@@ -2,9 +2,7 @@ package me.zeroeightsix.serversimplified.mixin;
 
 import com.mojang.brigadier.CommandDispatcher;
 import me.zeroeightsix.serversimplified.ServerSimplified;
-import me.zeroeightsix.serversimplified.commands.HealCommand;
-import me.zeroeightsix.serversimplified.commands.MuteCommand;
-import me.zeroeightsix.serversimplified.commands.SeekInventoryCommand;
+import me.zeroeightsix.serversimplified.commands.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandManager;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,7 +21,8 @@ public class MixinMinecraftServer {
 	private void start(CallbackInfo info) {
 		CommandDispatcher dispatcher = commandManager.getDispatcher();
 
-		HealCommand.register(dispatcher);
+		PlayerActionCommand.register(dispatcher, HealCommand.class);
+		PlayerActionCommand.register(dispatcher, FeedCommand.class);
 		MuteCommand.register(dispatcher);
 		SeekInventoryCommand.register(dispatcher);
 	}
