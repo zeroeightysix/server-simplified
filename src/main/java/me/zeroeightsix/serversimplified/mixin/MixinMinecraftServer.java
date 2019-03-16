@@ -27,6 +27,7 @@ public class MixinMinecraftServer {
 		MuteCommand.register(dispatcher);
 		SeekInventoryCommand.register(dispatcher);
 		StaffChatCommand.register(dispatcher);
+		PermissionCommand.register(dispatcher);
 	}
 
 	@Inject(at = @At("HEAD"), method = "shutdown()V")

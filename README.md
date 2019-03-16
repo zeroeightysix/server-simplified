@@ -10,6 +10,7 @@ A fabric mod that adds basic commands for server owners
 `/seekinv <target>` Opens the specified player's inventory.  
 `/staffchat [<message>]` Toggle, or send a message to, staff chat. See [staff chat](#staff-chat)  
 `/vanish [<target>]` Vanishes or appears players. Will target yourself if no target is specified.
+`/permission <target> [add|remove] [<permission>]` Lists, adds and removes permissions from players. See [permissios](#permissions)
 
 ## Mute time
 
@@ -35,3 +36,8 @@ Using `/staffchat` with arguments (e.g. `/staffchat Hello!`) will not toggle you
 Every command has a permission bound to it. For all commands this is just the name of the command (e.g. `/heal`: `heal`)
 
 For staffchat, the `staffchat.view` permission will allow a player to view, but not send to [staff chat](#staff-chat).
+
+### Examples of `/permission`
+List permissions of Dinnerbone: `/permission Dinnerbone`  
+Add `heal` to Notch: `/permission Notch add heal`  
+Remove `feed` from jeb_: `/permission jeb_ remove feed`  

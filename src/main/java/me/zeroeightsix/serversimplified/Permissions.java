@@ -4,18 +4,15 @@ import com.google.gson.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.command.ServerCommandSource;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static me.zeroeightsix.serversimplified.Util.isHuman;
 
 public class Permissions {
 
-    private HashMap<String, List<String>> permissions;
+    private HashMap<String, Set<String>> permissions;
 
-    private Permissions(HashMap<String, List<String>> permissions) {
+    private Permissions(HashMap<String, Set<String>> permissions) {
         this.permissions = permissions;
     }
 
@@ -41,7 +38,7 @@ public class Permissions {
      * @return          A empty permissions object, if the object was null or malformed. Otherwise, the permissions object constructed from the path.
      */
     public static Permissions loadFromJson(JsonArray players) {
-        HashMap<String, List<String>> permissionMap = new HashMap<>();
+        HashMap<String, Set<String>> permissionMap = new HashMap<>();
 
         try {
             for (int i = 0; i < players.size(); i++) {
@@ -49,7 +46,7 @@ public class Permissions {
                 String uuid = player.get("uuid").getAsString();
                 JsonArray permissions = player.getAsJsonArray("permissions");
 
-                List<String> permissionList = new ArrayList<>();
+                Set<String> permissionList = new HashSet<>();
                 for (JsonElement element : permissions) {
                     permissionList.add(element.getAsString());
                 }
@@ -65,7 +62,7 @@ public class Permissions {
 
     public JsonElement toJson() {
         JsonArray array = new JsonArray();
-        for (Map.Entry<String, List<String>> entry : permissions.entrySet()) {
+        for (Map.Entry<String, Set<String>> entry : permissions.entrySet()) {
             String uuid = entry.getKey();
             JsonArray permissionArray = new JsonArray();
             for (String s : entry.getValue()) {
@@ -78,6 +75,24 @@ public class Permissions {
             array.add(full);
         }
         return array;
+    }
+
+    public void addPermission(String uuid, String permission) {
+        if (!permissions.containsKey(uuid)) {
+            permissions.put(uuid, new HashSet<>());
+        }
+
+        permissions.get(uuid).add(permission);
+    }
+
+    public void removePermission(String uuid, String permission) {
+        Set<String> list = permissions.get(uuid);
+        list.remove(permission);
+        if (list.isEmpty()) permissions.remove(uuid);
+    }
+
+    public HashMap<String, Set<String>> getPermissions() {
+        return permissions;
     }
 
     private static Permissions create() {
