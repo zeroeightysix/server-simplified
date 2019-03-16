@@ -26,12 +26,11 @@ public class Permissions {
      * @return true if the ServerCommandSource has permission level 2 or explicit access to given node.
      */
     public boolean checkPermissions(ServerCommandSource source, String node) {
-        return source.hasPermissionLevel(2) || (isHuman(source) && hasPermission(source.getEntity(), node));
+        return source.hasPermissionLevel(2) || (isHuman(source) && hasPermission(source.getEntity().getUuidAsString(), node));
     }
 
-    private boolean hasPermission(Entity entity, String node) {
-        if (entity == null) return false;
-        String uuid = entity.getUuidAsString();
+    public boolean hasPermission(String uuid, String node) {
+        if (uuid == null) return false;
         if (!permissions.containsKey(uuid)) return false;
         return permissions.get(uuid).contains(node);
     }
