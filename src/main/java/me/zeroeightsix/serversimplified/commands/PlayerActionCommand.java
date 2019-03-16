@@ -12,10 +12,19 @@ import net.minecraft.text.StringTextComponent;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Consumer;
 
 import static me.zeroeightsix.serversimplified.Util.isHuman;
 
 public abstract class PlayerActionCommand {
+
+    protected final Consumer<ServerPlayerEntity> entityConsumer;
+    private final String verb;
+
+    public PlayerActionCommand(Consumer<ServerPlayerEntity> entityConsumer, String verb) {
+        this.entityConsumer = entityConsumer;
+        this.verb = verb;
+    }
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, Class<? extends PlayerActionCommand> commandClass) {
         try {
@@ -42,14 +51,23 @@ public abstract class PlayerActionCommand {
                     });
 
             dispatcher.register(argumentBuilder);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }
 
-    protected abstract int action(CommandContext<ServerCommandSource> context, Collection<ServerPlayerEntity> players);
+    private int action(CommandContext<ServerCommandSource> context, Collection<ServerPlayerEntity> players) {
+        players.forEach(entityConsumer);
+
+        int listSize = players.size();
+        if (listSize == 1) {
+            context.getSource().sendFeedback(new StringTextComponent(verb + " ").append(players.iterator().next().getName().append(".")), false); // TODO: Option for setting this to true?
+        } else {
+            context.getSource().sendFeedback(new StringTextComponent(verb + " " + listSize + " players."), false);
+        }
+
+        return listSize;
+    }
 
     protected abstract String getName();
 
