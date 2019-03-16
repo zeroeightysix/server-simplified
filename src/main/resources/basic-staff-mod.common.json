@@ -3,7 +3,8 @@
   "package": "me.zeroeightsix.basicstaffmod.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinMinecraftServer"
+    "MixinMinecraftServer",
+    "MixinServerPlayNetworkHandler"
   ],
   "injectors": {
     "defaultRequire": 1

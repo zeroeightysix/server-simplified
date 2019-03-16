@@ -20,11 +20,10 @@ public class HealCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> argumentBuilder = ServerCommandManager
                 .literal("heal")
-                .requires((commandSource) ->
+                .requires(
+                        (commandSource) ->
                                 BasicStaffMod.getConfiguration().getPermissions().checkPermissions(commandSource, "heal")
-                                        && commandSource.hasPermissionLevel(2));
-
-        argumentBuilder
+                                        || commandSource.hasPermissionLevel(2))
                 .then(
                         ServerCommandManager.argument("target", EntityArgumentType.multiplePlayer())
                                 .executes((context) -> healPlayers(context, EntityArgumentType.method_9312(context, "target")))

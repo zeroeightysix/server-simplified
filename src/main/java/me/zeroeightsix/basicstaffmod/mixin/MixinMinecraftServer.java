@@ -3,6 +3,7 @@ package me.zeroeightsix.basicstaffmod.mixin;
 import com.mojang.brigadier.CommandDispatcher;
 import me.zeroeightsix.basicstaffmod.BasicStaffMod;
 import me.zeroeightsix.basicstaffmod.commands.HealCommand;
+import me.zeroeightsix.basicstaffmod.commands.MuteCommand;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandManager;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,6 +23,7 @@ public class MixinMinecraftServer {
 		CommandDispatcher dispatcher = commandManager.getDispatcher();
 
 		HealCommand.register(dispatcher);
+		MuteCommand.register(dispatcher);
 	}
 
 	@Inject(at = @At("HEAD"), method = "shutdown()V")
