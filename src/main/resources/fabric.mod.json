@@ -1,0 +1,15 @@
+{
+  "id": "basic-staff-mod",
+  "name": "Basic Staff Commands",
+  "description": "Adds simple commands for server owners.",
+  "version": "${version}",
+  "side": "server",
+  "initializers": [],
+  "requires": {
+    "fabric": "*"
+  },
+  "mixins": {
+    "client": "basic-staff-mod.client.json",
+    "common": "basic-staff-mod.common.json"
+  }
+}
