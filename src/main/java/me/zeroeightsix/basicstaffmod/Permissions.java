@@ -33,7 +33,10 @@ public class Permissions {
     }
 
     private boolean hasPermission(Entity entity, String node) {
-        return entity != null && permissions.get(entity.getUuid().toString()).contains(node);
+        if (entity == null) return false;
+        String uuid = entity.getUuidAsString();
+        if (!permissions.containsKey(uuid)) return false;
+        return permissions.get(uuid).contains(node);
     }
 
     /**
