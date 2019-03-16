@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import me.zeroeightsix.serversimplified.ServerSimplified;
 import me.zeroeightsix.serversimplified.commands.HealCommand;
 import me.zeroeightsix.serversimplified.commands.MuteCommand;
+import me.zeroeightsix.serversimplified.commands.SeekInventoryCommand;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandManager;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,6 +25,7 @@ public class MixinMinecraftServer {
 
 		HealCommand.register(dispatcher);
 		MuteCommand.register(dispatcher);
+		SeekInventoryCommand.register(dispatcher);
 	}
 
 	@Inject(at = @At("HEAD"), method = "shutdown()V")
