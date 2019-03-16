@@ -4,7 +4,9 @@
   "description": "Adds simple commands for server owners.",
   "version": "${version}",
   "side": "server",
-  "initializers": [],
+  "initializers": [
+    "me.zeroeightsix.basicstaffmod.BasicStaffMod"
+  ],
   "requires": {
     "fabric": "*"
   },

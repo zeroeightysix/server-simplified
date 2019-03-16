@@ -3,6 +3,7 @@ package me.zeroeightsix.basicstaffmod.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import me.zeroeightsix.basicstaffmod.BasicStaffMod;
 import net.minecraft.command.arguments.EntityArgumentType;
 import net.minecraft.server.command.ServerCommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -17,7 +18,11 @@ import static me.zeroeightsix.basicstaffmod.Util.isHuman;
 public class HealCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        LiteralArgumentBuilder<ServerCommandSource> argumentBuilder = ServerCommandManager.literal("heal").requires((serverCommandSource_1) -> serverCommandSource_1.hasPermissionLevel(2));
+        LiteralArgumentBuilder<ServerCommandSource> argumentBuilder = ServerCommandManager
+                .literal("heal")
+                .requires((commandSource) ->
+                                BasicStaffMod.getConfiguration().getPermissions().checkPermissions(commandSource, "heal")
+                                        && commandSource.hasPermissionLevel(2));
 
         argumentBuilder
                 .then(
