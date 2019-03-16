@@ -23,6 +23,7 @@ public class MixinMinecraftServer {
 
 		PlayerActionCommand.register(dispatcher, HealCommand.class);
 		PlayerActionCommand.register(dispatcher, FeedCommand.class);
+		PlayerActionCommand.register(dispatcher, VanishCommand.class);
 		MuteCommand.register(dispatcher);
 		SeekInventoryCommand.register(dispatcher);
 	}

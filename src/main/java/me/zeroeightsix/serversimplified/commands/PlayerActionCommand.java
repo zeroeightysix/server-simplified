@@ -13,15 +13,16 @@ import net.minecraft.text.StringTextComponent;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static me.zeroeightsix.serversimplified.Util.isHuman;
 
 public abstract class PlayerActionCommand {
 
     protected final Consumer<ServerPlayerEntity> entityConsumer;
-    private final String verb;
+    private final Function<Collection<ServerPlayerEntity>, String> verb;
 
-    public PlayerActionCommand(Consumer<ServerPlayerEntity> entityConsumer, String verb) {
+    public PlayerActionCommand(Consumer<ServerPlayerEntity> entityConsumer, Function<Collection<ServerPlayerEntity>, String> verb) {
         this.entityConsumer = entityConsumer;
         this.verb = verb;
     }
@@ -61,9 +62,9 @@ public abstract class PlayerActionCommand {
 
         int listSize = players.size();
         if (listSize == 1) {
-            context.getSource().sendFeedback(new StringTextComponent(verb + " ").append(players.iterator().next().getName().append(".")), false); // TODO: Option for setting this to true?
+            context.getSource().sendFeedback(new StringTextComponent(verb.apply(players) + " ").append(players.iterator().next().getName().append(".")), false); // TODO: Option for setting this to true?
         } else {
-            context.getSource().sendFeedback(new StringTextComponent(verb + " " + listSize + " players."), false);
+            context.getSource().sendFeedback(new StringTextComponent(verb.apply(players) + " " + listSize + " players."), false);
         }
 
         return listSize;
