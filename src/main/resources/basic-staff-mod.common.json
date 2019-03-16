@@ -1,8 +1,9 @@
 {
   "required": true,
-  "package": "me.zeroeightix.basicstaffmod.mixin",
+  "package": "me.zeroeightsix.basicstaffmod.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MixinMinecraftServer"
   ],
   "injectors": {
     "defaultRequire": 1

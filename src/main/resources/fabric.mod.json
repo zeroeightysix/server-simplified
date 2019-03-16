@@ -9,7 +9,6 @@
     "fabric": "*"
   },
   "mixins": {
-    "client": "basic-staff-mod.client.json",
     "common": "basic-staff-mod.common.json"
   }
 }
