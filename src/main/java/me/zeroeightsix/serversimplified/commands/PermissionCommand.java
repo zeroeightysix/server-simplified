@@ -28,6 +28,7 @@ public class PermissionCommand {
                                                                     ServerPlayerEntity playerEntity = EntityArgumentType.method_9312(context, "target").iterator().next();
                                                                     ServerSimplified.getConfiguration().getPermissions().addPermission(playerEntity.getUuidAsString(), permission);
                                                                     context.getSource().sendFeedback(new StringTextComponent("Added permission " + permission + " to ").append(playerEntity.getDisplayName()), false);
+                                                                    context.getSource().getMinecraftServer().getCommandManager().sendCommandTree(playerEntity);
                                                                     return 1;
                                                                 })
                                                 )
@@ -44,6 +45,7 @@ public class PermissionCommand {
                                                                     ServerPlayerEntity playerEntity = EntityArgumentType.method_9312(context, "target").iterator().next();
                                                                     ServerSimplified.getConfiguration().getPermissions().removePermission(playerEntity.getUuidAsString(), permission);
                                                                     context.getSource().sendFeedback(new StringTextComponent("Removed permission " + permission + " from ").append(playerEntity.getDisplayName()), false);
+                                                                    context.getSource().getMinecraftServer().getCommandManager().sendCommandTree(playerEntity);
                                                                     return 1;
                                                                 })
                                                 )
