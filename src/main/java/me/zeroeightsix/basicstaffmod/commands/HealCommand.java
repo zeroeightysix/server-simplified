@@ -10,6 +10,9 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.StringTextComponent;
 
 import java.util.Collection;
+import java.util.Collections;
+
+import static me.zeroeightsix.basicstaffmod.Util.isHuman;
 
 public class HealCommand {
 
@@ -22,7 +25,11 @@ public class HealCommand {
                                 .executes((context) -> healPlayers(context, EntityArgumentType.method_9312(context, "target")))
                 )
                 .executes(context -> {
-                    context.getSource().sendError(new StringTextComponent("You must specify at least one player."));
+                    if (isHuman(context.getSource())) {
+                        healPlayers(context, Collections.singleton((ServerPlayerEntity) context.getSource().getEntity()));
+                    } else {
+                        context.getSource().sendError(new StringTextComponent("You must specify at least one player."));
+                    }
                     return 1;
                 });
 
