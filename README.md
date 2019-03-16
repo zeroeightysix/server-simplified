@@ -5,10 +5,10 @@ A fabric mod that adds basic commands for server owners
 ## Commands
 `/feed [<target>]` Restores players' health. Will target yourself if no target is specified.   
 `/heal [<target>]` Restore players' hunger. Will target yourself if no target is specified.  
-`/mute <target> [<time>]` Mutes players. See [this section](#Mute time) for the formatting of `time`  
+`/mute <target> [<time>]` Mutes players. See [this section](#mute-time) for the formatting of `time`  
 `/unmute <target>` Unmutes players.  
 `/seekinv <target>` Opens the specified player's inventory.  
-`/staffchat [<message>]` Toggle, or send a message to, staff chat. See [staff chat](#Staff chat)  
+`/staffchat [<message>]` Toggle, or send a message to, staff chat. See [staff chat](#staff-chat)  
 `/vanish [<target>]` Vanishes or appears players. Will target yourself if no target is specified.
 
 ## Mute time
@@ -34,4 +34,4 @@ Using `/staffchat` with arguments (e.g. `/staffchat Hello!`) will not toggle you
 ## Permissions
 Every command has a permission bound to it. For all commands this is just the name of the command (e.g. `/heal`: `heal`)
 
-For staffchat, the `staffchat.view` permission will allow a player to view, but not send to [staff chat](#staff chat).
+For staffchat, the `staffchat.view` permission will allow a player to view, but not send to [staff chat](#staff-chat).
