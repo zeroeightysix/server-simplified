@@ -6,7 +6,8 @@
     "MixinMinecraftServer",
     "MixinServerPlayNetworkHandler",
     "MixinKickCommand",
-    "MixinBanCommand"
+    "MixinBanCommand",
+    "MixinPlayerManager"
   ],
   "injectors": {
     "defaultRequire": 1
