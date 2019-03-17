@@ -35,7 +35,9 @@ Using `/staffchat` with arguments (e.g. `/staffchat Hello!`) will not toggle you
 ## Permissions
 Every command has a permission bound to it. For all commands this is just the name of the command (e.g. `/heal`: `heal`)
 
-For staffchat, the `staffchat.view` permission will allow a player to view, but not send to [staff chat](#staff-chat).
+For staffchat, the `staffchat.view` permission will allow a player to view, but not send to [staff chat](#staff-chat).  
+Add the `kick` permission to allow a player to use vanilla's `kick` command  
+Add the `ban` permission to allow a player to use vanilla's `ban` command
 
 ### Examples of `/permission`
 List permissions of Dinnerbone: `/permission Dinnerbone`  
