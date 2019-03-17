@@ -9,8 +9,8 @@ A fabric mod that adds basic commands for server owners
 `/unmute <target>` Unmutes players.  
 `/seekinv <target>` Opens the specified player's inventory.  
 `/staffchat [<message>]` Toggle, or send a message to, staff chat. See [staff chat](#staff-chat)  
-`/vanish [<target>]` Vanishes or appears players. Will target yourself if no target is specified.
-`/permission <target> [add|remove] [<permission>]` Lists, adds and removes permissions from players. See [permissios](#permissions)
+`/vanish [<target>]` Vanishes or appears players. Will target yourself if no target is specified.  
+`/permission <target> [add|remove] [<permission>]` Lists, adds and removes permissions from players. See [permissions](#permissions)
 
 ## Mute time
 
