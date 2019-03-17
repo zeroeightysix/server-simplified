@@ -7,9 +7,7 @@
   "initializers": [
     "me.zeroeightsix.serversimplified.ServerSimplified"
   ],
-  "requires": {
-    "fabric": "*"
-  },
+  "requires": {},
   "mixins": {
     "common": "serversimplified.common.json"
   }
