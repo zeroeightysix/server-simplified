@@ -61,12 +61,11 @@ public class SeekInventoryCommand {
                                         e.printStackTrace();
                                     }
                                     return 1;
-                                })
-                        .executes(context -> {
+                                }))
+                .executes(context -> {
                             context.getSource().sendError(new StringTextComponent("You must specify at least one player."));
                             return 1;
-                        })
-                );
+                });
 
         dispatcher.register(builder);
     }
