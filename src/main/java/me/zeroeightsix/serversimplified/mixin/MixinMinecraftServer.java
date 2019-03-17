@@ -32,7 +32,7 @@ public class MixinMinecraftServer {
 
 	@Inject(at = @At("HEAD"), method = "shutdown()V")
 	private void shutdown(CallbackInfo info) {
-		ServerSimplified.save();
+		ServerSimplified.shutdown();
 	}
 
 }

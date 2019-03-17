@@ -20,7 +20,7 @@ public class VanishCommand extends PlayerActionCommand {
         return vanished.contains(next);
     }
 
-    private static void vanishPlayer(ServerPlayerEntity p) {
+    public static void vanishPlayer(ServerPlayerEntity p) {
         if (isVanished(p)) {
             vanished.remove(p);
             p.removeStatusEffect(StatusEffects.INVISIBILITY);
