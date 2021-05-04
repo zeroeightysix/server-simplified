@@ -7,6 +7,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import me.zeroeightsix.serversimplified.ServerSimplified;
+import me.zeroeightsix.serversimplified.Util;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.MessageArgumentType;
 import net.minecraft.server.command.CommandManager;
@@ -21,11 +22,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MuteCommand {
+public class MuteCommand implements Registrable {
 
     public static final HashMap<String, Long> mutedPlayers = new HashMap<>();
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> muteBuilder = CommandManager
                 .literal("mute")
                 .requires(
@@ -35,8 +36,8 @@ public class MuteCommand {
                 .then(
                         CommandManager.argument("target", EntityArgumentType.players())
                                 .then(CommandManager.argument("time", MessageArgumentType.message())
-                                        .executes(context -> mutePlayer(context, EntityArgumentType.getPlayers(context, "target"), true, MessageArgumentType.getMessage(context, "time"))))
-                                .executes((context) -> mutePlayer(context, EntityArgumentType.getPlayers(context, "target"), true, null))
+                                        .executes(context -> mutePlayers(context, EntityArgumentType.getPlayers(context, "target"), true, MessageArgumentType.getMessage(context, "time"))))
+                                .executes((context) -> mutePlayers(context, EntityArgumentType.getPlayers(context, "target"), true, null))
                 )
                 .executes(context -> {
                     context.getSource().sendError(new LiteralText("You must specify at least one player."));
@@ -51,7 +52,7 @@ public class MuteCommand {
                                         || commandSource.hasPermissionLevel(2))
                 .then(
                         CommandManager.argument("target", EntityArgumentType.players())
-                                .executes((context) -> mutePlayer(context, EntityArgumentType.getPlayers(context, "target"), false, null))
+                                .executes((context) -> mutePlayers(context, EntityArgumentType.getPlayers(context, "target"), false, null))
                 )
                 .executes(context -> {
                     context.getSource().sendError(new LiteralText("You must specify at least one player."));
@@ -62,7 +63,7 @@ public class MuteCommand {
         dispatcher.register(unmuteBuilder);
     }
 
-    private static int mutePlayer(CommandContext<ServerCommandSource> context, Collection<ServerPlayerEntity> target, boolean muted, Text time) {
+    private static int mutePlayers(CommandContext<ServerCommandSource> context, Collection<ServerPlayerEntity> players, boolean muted, Text time) {
         long muteTime = -1L;
         Duration muteDuration = null;
         if (time != null) {
@@ -80,9 +81,7 @@ public class MuteCommand {
             }
         }
 
-        int i = 0;
-        for (ServerPlayerEntity entity : target) {
-            i++;
+        for (ServerPlayerEntity entity : players) {
             if (muted)
                 mutedPlayers.put(entity.getUuidAsString(), muteTime);
             else
@@ -90,12 +89,8 @@ public class MuteCommand {
         }
 
         String timeAppend = muteTime == -1 ? "" : " for " + humanReadableDuration(muteDuration);
-        if (i == 1) {
-            context.getSource().sendFeedback(new LiteralText((muted ? "Muted" : "Unmuted") +  " ").append(target.iterator().next().getName()).append(timeAppend + "."), false);
-        } else {
-            context.getSource().sendFeedback(new LiteralText((muted ? "Muted" : "Unmuted") +  i + " players" + timeAppend + "."), false);
-        }
-        return i;
+        context.getSource().sendFeedback(new LiteralText((muted ? "Muted" : "Removed mute for") + " ").append(Util.namePlayers(players)).append(timeAppend), false);
+        return 0;
     }
 
     public static String humanReadableDuration(Duration duration) {
@@ -109,12 +104,12 @@ public class MuteCommand {
         int index = s.indexOf(c);
         if (index != -1) {
             String s1 = s.substring(0, index);
-            s = s.substring(index+1);
+            s = s.substring(index + 1);
             index = Integer.parseInt(s1);
-            return new Pair(index, s);
+            return new Pair<>(index, s);
         }
 
-        return new Pair(0, s);
+        return new Pair<>(0, s);
     }
 
     private static Duration parseTime(String formattedText) throws NumberFormatException {
@@ -123,7 +118,7 @@ public class MuteCommand {
         Duration duration = Duration.ZERO;
 
         Pair<Integer, String> pair = removeAndReturn(formattedText, 'y');
-        duration = duration.plus(Duration.ofDays(pair.key * 365));
+        duration = duration.plus(Duration.ofDays(pair.key * 365L));
         formattedText = pair.value;
 
         pair = removeAndReturn(formattedText, 'd');

@@ -13,9 +13,9 @@ import net.minecraft.text.MutableText;
 
 import java.util.Set;
 
-public class PermissionCommand {
+public class PermissionCommand implements Registrable {
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> builder = CommandManager
                 .literal("permission")
                 .then(

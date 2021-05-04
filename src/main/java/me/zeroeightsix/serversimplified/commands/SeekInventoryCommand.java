@@ -10,6 +10,7 @@ import net.minecraft.inventory.DoubleInventory;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -21,15 +22,15 @@ import java.util.Collection;
 
 import static me.zeroeightsix.serversimplified.Util.isHuman;
 
-public class SeekInventoryCommand {
+public class SeekInventoryCommand implements Registrable {
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> builder = CommandManager
                 .literal("seekinv")
                 .requires(source -> ServerSimplified.getConfiguration().getPermissions().checkPermissions(source, "seekinv")
                         || source.hasPermissionLevel(2))
                 .then(
-                        CommandManager.argument("target", EntityArgumentType.player())
+                        CommandManager.argument("player", EntityArgumentType.player())
                                 .executes(context -> {
                                     try {
                                         if (!isHuman(context.getSource())) {
@@ -37,31 +38,25 @@ public class SeekInventoryCommand {
                                             return 1;
                                         }
                                         ServerPlayerEntity sender = (ServerPlayerEntity) context.getSource().getEntity();
-                                        ServerPlayerEntity entity = EntityArgumentType.getPlayer(context, "target");
-                                        entity.getInventory().onOpen(sender);
+                                        ServerPlayerEntity target = EntityArgumentType.getPlayer(context, "player");
+                                        target.getInventory().onOpen(sender);
                                         sender.openHandledScreen(new NamedScreenHandlerFactory() {
-
                                             @Override
                                             public Text getDisplayName() {
-                                                return entity.getName();
+                                                return target.getName();
                                             }
 
-                                            @Nullable
                                             @Override
                                             public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-                                                return GenericContainerScreenHandler.createGeneric9x4(syncId, inv);
+                                                return new GenericContainerScreenHandler(ScreenHandlerType.GENERIC_9X4, syncId, inv, target.getInventory(), 4);
+//                                                return GenericContainerScreenHandler.createGeneric9x4(syncId, inv);
                                             }
-
-                                            //                                            @Override
-//                                            public Container createMenu(int id, PlayerInventory inventory, PlayerEntity var3) {
-//                                                return GenericContainer.method_19247(id, inventory, new DoubleInventory(entity.inventory, entity.getEnderChestInventory()));
-//                                            }
                                         });
-                                        return 1;
+                                        return 0;
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
-                                    return 1;
+                                    return 0;
                                 }))
                 .executes(context -> {
                     context.getSource().sendError(new LiteralText("You must specify at least one player."));

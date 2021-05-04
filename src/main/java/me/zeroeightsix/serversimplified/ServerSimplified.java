@@ -14,20 +14,17 @@ public class ServerSimplified implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        System.out.println("SERVER SIMPLIFIED RAN!");
-        final List<Registrable> commands = Arrays.asList(new FeedCommand());
+        final List<Registrable> commands = Arrays.asList(new FeedCommand(),
+                new HealCommand(),
+                new MuteCommand(),
+                new PermissionCommand(),
+                new SeekInventoryCommand(),
+                new StaffChatCommand(),
+                new VanishCommand());
         configuration = Configuration.load();
 
-        CommandRegistrationCallback.EVENT.register(((dispatcher, dedicated) -> {
-            commands.forEach(registrable -> registrable.register(dispatcher));
-
-            PlayerActionCommand.register(dispatcher, HealCommand.class);
-            PlayerActionCommand.register(dispatcher, VanishCommand.class);
-            MuteCommand.register(dispatcher);
-            SeekInventoryCommand.register(dispatcher);
-            StaffChatCommand.register(dispatcher);
-            PermissionCommand.register(dispatcher);
-        }));
+        CommandRegistrationCallback.EVENT.register(((dispatcher, dedicated) ->
+                commands.forEach(registrable -> registrable.register(dispatcher))));
     }
 
     public static void shutdown() {

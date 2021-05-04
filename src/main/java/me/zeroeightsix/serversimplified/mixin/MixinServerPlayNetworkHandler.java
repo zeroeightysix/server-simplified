@@ -15,6 +15,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.UUID;
+
 @Mixin(ServerPlayNetworkHandler.class)
 public class MixinServerPlayNetworkHandler {
 
@@ -23,13 +25,14 @@ public class MixinServerPlayNetworkHandler {
     @Shadow
     private MinecraftServer server;
 
-    @Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;method_31286(Lnet/minecraft/server/filter/TextStream$Message;)V"), cancellable = true)
+    @Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Ljava/lang/String;startsWith(Ljava/lang/String;)Z", shift = At.Shift.BEFORE), cancellable = true)
     public void broadcastChatMessage(ChatMessageC2SPacket packet, CallbackInfo info) {
-        if (MuteCommand.isMuted(player.getUuidAsString())) {
+        final UUID uuid = player.getUuid();
+        String message;
+        if (uuid != null && MuteCommand.isMuted(uuid.toString())) {
             player.sendMessage(new LiteralText("You were muted! Could not send message.").formatted(Formatting.RED), MessageType.CHAT, null);
             info.cancel();
-        } else if (StaffChatCommand.isInStaffChat(player.getUuidAsString())) {
-            String message = packet.getChatMessage();
+        } else if (!(message = packet.getChatMessage()).startsWith("/") && StaffChatCommand.isInStaffChat(player.getUuidAsString())) {
             StaffChatCommand.sendToStaffChat(StaffChatCommand.generateStaffChatMessage(player.getDisplayName().asString(), message), server);
             info.cancel();
         }

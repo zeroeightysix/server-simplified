@@ -20,12 +20,12 @@ import java.util.Set;
 
 import static me.zeroeightsix.serversimplified.Util.isHuman;
 
-public class StaffChatCommand {
+public class StaffChatCommand implements Registrable {
 
     private static final Set<String> staffChat = new HashSet<>();
     static boolean consoleInSChat = false;
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> builder = CommandManager
                 .literal("staffchat")
                 .requires(
