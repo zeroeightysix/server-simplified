@@ -1,15 +1,28 @@
 {
+  "schemaVersion": 1,
   "id": "serversimplified",
+  "version": "${version}",
   "name": "Server Simplified",
   "description": "Adds simple commands for server owners.",
-  "version": "${version}",
-  "side": "universal",
-  "initializers": [
-    "me.zeroeightsix.serversimplified.ServerSimplified"
+  "authors": [
+    "086"
   ],
-  "requires": {},
+  "contact": {
+    "sources": "https://github.com/zeroeightysix/server-simplified"
+  },
+  "license": "GPL-3.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.zeroeightsix.serversimplified.ServerSimplified"
+    ]
+  },
   "mixins": [
     "serversimplified.common.json"
   ],
-  "schemaVersion": 1
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.17-alpha.21.17.a"
+  }
 }
