@@ -8,7 +8,8 @@
     "me.zeroeightsix.serversimplified.ServerSimplified"
   ],
   "requires": {},
-  "mixins": {
-    "common": "serversimplified.common.json"
-  }
+  "mixins": [
+    "serversimplified.common.json"
+  ],
+  "schemaVersion": 1
 }

@@ -4,11 +4,11 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import me.zeroeightsix.serversimplified.ServerSimplified;
-import net.minecraft.command.arguments.EntityArgumentType;
-import net.minecraft.server.command.ServerCommandManager;
+import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.StringTextComponent;
+import net.minecraft.text.LiteralText;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -32,21 +32,17 @@ public abstract class PlayerActionCommand {
             PlayerActionCommand command = commandClass.newInstance();
             String name = command.getName();
 
-            LiteralArgumentBuilder<ServerCommandSource> argumentBuilder = ServerCommandManager
+            LiteralArgumentBuilder<ServerCommandSource> argumentBuilder = CommandManager
                     .literal(name)
-                    .requires(
-                            (commandSource) ->
-                                    ServerSimplified.getConfiguration().getPermissions().checkPermissions(commandSource, name)
-                                            || commandSource.hasPermissionLevel(2))
-                    .then(
-                            ServerCommandManager.argument("target", EntityArgumentType.multiplePlayer())
-                                    .executes((context) -> command.action(context, EntityArgumentType.method_9312(context, "target")))
-                    )
+                    .requires((commandSource) -> ServerSimplified.getConfiguration().getPermissions().checkPermissions(commandSource, name)
+                            || commandSource.hasPermissionLevel(2))
+                    .then(CommandManager.argument("target", EntityArgumentType.players())
+                            .executes((context) -> command.action(context, EntityArgumentType.getPlayers(context, "target"))))
                     .executes(context -> {
                         if (isHuman(context.getSource())) {
                             command.action(context, Collections.singleton((ServerPlayerEntity) context.getSource().getEntity()));
                         } else {
-                            context.getSource().sendError(new StringTextComponent("You must specify at least one player."));
+                            context.getSource().sendError(new LiteralText("You must specify at least one player."));
                         }
                         return 1;
                     });
@@ -62,9 +58,9 @@ public abstract class PlayerActionCommand {
 
         int listSize = players.size();
         if (listSize == 1) {
-            context.getSource().sendFeedback(new StringTextComponent(verb.apply(players) + " ").append(players.iterator().next().getName().append(".")), false); // TODO: Option for setting this to true?
+            context.getSource().sendFeedback(new LiteralText(verb.apply(players) + " ").append(players.iterator().next().getName().getString() + "."), false); // TODO: Option for setting this to true?
         } else {
-            context.getSource().sendFeedback(new StringTextComponent(verb.apply(players) + " " + listSize + " players."), false);
+            context.getSource().sendFeedback(new LiteralText(verb.apply(players) + " " + listSize + " players."), false);
         }
 
         return listSize;

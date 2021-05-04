@@ -7,53 +7,54 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import me.zeroeightsix.serversimplified.ServerSimplified;
-import net.minecraft.command.arguments.EntityArgumentType;
-import net.minecraft.command.arguments.MessageArgumentType;
-import net.minecraft.server.command.ServerCommandManager;
+import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.command.argument.MessageArgumentType;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.StringTextComponent;
-import net.minecraft.text.TextComponent;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MuteCommand {
 
     public static final HashMap<String, Long> mutedPlayers = new HashMap<>();
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        LiteralArgumentBuilder<ServerCommandSource> muteBuilder = ServerCommandManager
+        LiteralArgumentBuilder<ServerCommandSource> muteBuilder = CommandManager
                 .literal("mute")
                 .requires(
                         (commandSource) ->
                                 ServerSimplified.getConfiguration().getPermissions().checkPermissions(commandSource, "mute")
                                         || commandSource.hasPermissionLevel(2))
                 .then(
-                        ServerCommandManager.argument("target", EntityArgumentType.multiplePlayer())
-                                .then(ServerCommandManager.argument("time", MessageArgumentType.create())
-                                        .executes(context -> mutePlayer(context, EntityArgumentType.method_9312(context, "target"), true, MessageArgumentType.getMessageArgument(context, "time"))))
-                                .executes((context) -> mutePlayer(context, EntityArgumentType.method_9312(context, "target"), true, null))
+                        CommandManager.argument("target", EntityArgumentType.players())
+                                .then(CommandManager.argument("time", MessageArgumentType.message())
+                                        .executes(context -> mutePlayer(context, EntityArgumentType.getPlayers(context, "target"), true, MessageArgumentType.getMessage(context, "time"))))
+                                .executes((context) -> mutePlayer(context, EntityArgumentType.getPlayers(context, "target"), true, null))
                 )
                 .executes(context -> {
-                    context.getSource().sendError(new StringTextComponent("You must specify at least one player."));
+                    context.getSource().sendError(new LiteralText("You must specify at least one player."));
                     return 1;
                 });
 
-        LiteralArgumentBuilder<ServerCommandSource> unmuteBuilder = ServerCommandManager
+        LiteralArgumentBuilder<ServerCommandSource> unmuteBuilder = CommandManager
                 .literal("unmute")
                 .requires(
                         (commandSource) ->
                                 ServerSimplified.getConfiguration().getPermissions().checkPermissions(commandSource, "unmute")
                                         || commandSource.hasPermissionLevel(2))
                 .then(
-                        ServerCommandManager.argument("target", EntityArgumentType.multiplePlayer())
-                                .executes((context) -> mutePlayer(context, EntityArgumentType.method_9312(context, "target"), false, null))
+                        CommandManager.argument("target", EntityArgumentType.players())
+                                .executes((context) -> mutePlayer(context, EntityArgumentType.getPlayers(context, "target"), false, null))
                 )
                 .executes(context -> {
-                    context.getSource().sendError(new StringTextComponent("You must specify at least one player."));
+                    context.getSource().sendError(new LiteralText("You must specify at least one player."));
                     return 1;
                 });
 
@@ -61,17 +62,17 @@ public class MuteCommand {
         dispatcher.register(unmuteBuilder);
     }
 
-    private static int mutePlayer(CommandContext<ServerCommandSource> context, Collection<ServerPlayerEntity> target, boolean muted, TextComponent time) {
+    private static int mutePlayer(CommandContext<ServerCommandSource> context, Collection<ServerPlayerEntity> target, boolean muted, Text time) {
         long muteTime = -1L;
         Duration muteDuration = null;
         if (time != null) {
             try {
-                muteTime = Instant.now().plus(muteDuration = parseTime(time.getFormattedText())).toEpochMilli();
+                muteTime = Instant.now().plus(muteDuration = parseTime(time.asString())).toEpochMilli();
             } catch (NumberFormatException e) {
-                context.getSource().sendError(new StringTextComponent("Failed to parse time. Input must be numerical!"));
+                context.getSource().sendError(new LiteralText("Failed to parse time. Input must be numerical!"));
                 return 1;
             } catch (IllegalStateException e) {
-                context.getSource().sendError(new StringTextComponent("Failed to parse time. " + e.getMessage()));
+                context.getSource().sendError(new LiteralText("Failed to parse time. " + e.getMessage()));
                 return 1;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -90,9 +91,9 @@ public class MuteCommand {
 
         String timeAppend = muteTime == -1 ? "" : " for " + humanReadableDuration(muteDuration);
         if (i == 1) {
-            context.getSource().sendFeedback(new StringTextComponent((muted ? "Muted" : "Unmuted") +  " ").append(target.iterator().next().getName()).append(timeAppend + "."), false);
+            context.getSource().sendFeedback(new LiteralText((muted ? "Muted" : "Unmuted") +  " ").append(target.iterator().next().getName()).append(timeAppend + "."), false);
         } else {
-            context.getSource().sendFeedback(new StringTextComponent((muted ? "Muted" : "Unmuted") +  i + " players" + timeAppend + "."), false);
+            context.getSource().sendFeedback(new LiteralText((muted ? "Muted" : "Unmuted") +  i + " players" + timeAppend + "."), false);
         }
         return i;
     }
