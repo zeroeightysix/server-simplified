@@ -3,8 +3,8 @@
 A fabric mod that adds basic commands for server owners
 
 ## Commands
-`/feed [<target>]` Restores players' health. Will target yourself if no target is specified.   
-`/heal [<target>]` Restore players' hunger. Will target yourself if no target is specified.  
+`/feed [<target>]` Restores players' hunger. Will target yourself if no target is specified.   
+`/heal [<target>]` Restore players' health. Will target yourself if no target is specified.  
 `/mute <target> [<time>]` Mutes players. See [this section](#mute-time) for the formatting of `time`  
 `/unmute <target>` Unmutes players.  
 `/seekinv <target>` Opens the specified player's inventory.  
