@@ -7,36 +7,50 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Configuration {
 
-    public static final String PREFFERED_FILENAME = "serversimplified_configuration.json";
+    public static final String PREFERRED_FILENAME = "serversimplified_configuration.json";
 
     private final Path origin;
-    Permissions permissions;
+    private final Permissions permissions;
+    private final List<String> muteWhitelist;
 
     public Configuration(Path origin) {
-        this(origin, new JsonArray());
+        this(origin, new JsonArray(), new ArrayList<>());
     }
 
-    public Configuration(Path origin, JsonArray permission) {
+    public Configuration(Path origin, JsonArray permissions, List<String> muteWhitelist) {
         this.origin = origin;
-        permissions = Permissions.loadFromJson(permission);
+        this.permissions = Permissions.loadFromJson(permissions);
+        this.muteWhitelist = muteWhitelist;
     }
 
     /**
      * Load a configuration file
-     * @param path  The path to read from
-     * @return      The constructed configuration object
+     *
+     * @param path The path to read from
+     * @return The constructed configuration object
      */
     public static Configuration loadFromPath(Path path) {
         try {
             String jsonString = new String(Files.readAllBytes(path));
             JsonObject object = new JsonParser().parse(jsonString).getAsJsonObject();
-            JsonArray array = object.getAsJsonArray("permissions");
+            JsonArray permissions = object.getAsJsonArray("permissions");
+            JsonArray muteWhitelist = object.getAsJsonArray("mute_whitelist");
             JsonObject muted = object.getAsJsonObject("muted");
             MuteCommand.fromJson(muted);
-            return new Configuration(path, array);
+            ArrayList<String> whitelist = new ArrayList<>();
+            if (muteWhitelist != null) {
+                muteWhitelist.forEach(jsonElement -> {
+                    if (jsonElement.isJsonPrimitive()) {
+                        whitelist.add(jsonElement.getAsString());
+                    }
+                });
+            }
+            return new Configuration(path, permissions, whitelist);
         } catch (Exception e) {
             e.printStackTrace();
             return new Configuration(path);
@@ -47,7 +61,7 @@ public class Configuration {
      * @return {@link #loadFromPath(Path)} with the default configuration filename
      */
     public static Configuration load() {
-        return loadFromPath(Paths.get(PREFFERED_FILENAME));
+        return loadFromPath(Paths.get(PREFERRED_FILENAME));
     }
 
     public void save() throws IOException {
@@ -55,6 +69,11 @@ public class Configuration {
 
         object.add("permissions", getPermissions().toJson());
         object.add("muted", MuteCommand.toJson());
+        final JsonArray muteWhitelist = new JsonArray();
+        for (String s : this.muteWhitelist) {
+            muteWhitelist.add(s);
+        }
+        object.add("mute_whitelist", muteWhitelist);
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Files.write(origin, gson.toJson(object).getBytes());
@@ -62,5 +81,9 @@ public class Configuration {
 
     public Permissions getPermissions() {
         return permissions;
+    }
+
+    public List<String> getMuteWhitelist() {
+        return muteWhitelist;
     }
 }

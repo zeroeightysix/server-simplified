@@ -1,5 +1,6 @@
 package me.zeroeightsix.serversimplified.mixin;
 
+import me.zeroeightsix.serversimplified.ServerSimplified;
 import me.zeroeightsix.serversimplified.commands.MuteCommand;
 import me.zeroeightsix.serversimplified.commands.StaffChatCommand;
 import net.minecraft.network.MessageType;
@@ -28,11 +29,13 @@ public class MixinServerPlayNetworkHandler {
     @Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Ljava/lang/String;startsWith(Ljava/lang/String;)Z", shift = At.Shift.BEFORE), cancellable = true)
     public void broadcastChatMessage(ChatMessageC2SPacket packet, CallbackInfo info) {
         final UUID uuid = player.getUuid();
-        String message;
+        String message = packet.getChatMessage();
         if (uuid != null && MuteCommand.isMuted(uuid.toString())) {
-            player.sendMessage(new LiteralText("You were muted! Could not send message.").formatted(Formatting.RED), MessageType.CHAT, null);
-            info.cancel();
-        } else if (!(message = packet.getChatMessage()).startsWith("/") && StaffChatCommand.isInStaffChat(player.getUuidAsString())) {
+            if (!message.isEmpty() && !ServerSimplified.getConfiguration().getMuteWhitelist().contains(message.substring(1).split(" ")[0])) {
+                player.sendMessage(new LiteralText("You were muted! Could not send message.").formatted(Formatting.RED), MessageType.CHAT, null);
+                info.cancel();
+            }
+        } else if (!message.startsWith("/") && StaffChatCommand.isInStaffChat(player.getUuidAsString())) {
             StaffChatCommand.sendToStaffChat(StaffChatCommand.generateStaffChatMessage(player.getDisplayName().asString(), message), server);
             info.cancel();
         }
